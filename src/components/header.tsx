@@ -6,9 +6,9 @@ import AstroClashLogo from "../assets/images/astroclash_logo.png";
 function Header() {
 	return (
 		<Box bg={'neutral.300'}>
-			<Flex justifyContent={'space-between'} alignItems={'center'} minHeight={'88px'} paddingX={'40px'} position="relative">
+			<Flex justifyContent={'space-between'} alignItems={'center'} minHeight={'88px'} paddingX={'40px'} position={'relative'}>
 				<BurgerMenuIcon/>
-				<Image src={AstroClashLogo} position="absolute" left="50%" transform="translateX(-50%)" />
+				<Image src={AstroClashLogo} position="absolute" left="50%" transform="translateX(-50%)"/>
 				<Button variant={'secondary'} size={'sm'}>Play now</Button>
 			</Flex>
 		</Box>

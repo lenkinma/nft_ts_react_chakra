@@ -1,40 +1,90 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Card, CardBody, CardFooter, CardHeader, Center, Divider, Flex, Icon, Image, Text} from "@chakra-ui/react";
 import SeriesLabel from "./seriesLabel";
 import useColorWithOpacity from "../hooks/useColorWithOpacity";
 import {ReactComponent as locationIcon} from "../assets/icons/location.svg";
 import {ReactComponent as levelItemIcon} from "../assets/icons/levelItem.svg";
+import {gridCardProps} from '../types/interfaces';
+import {motion, useAnimation} from "framer-motion";
 
 
-interface gridCardProps {
-	cardImage: string,
-	series: string,
-	cardName: string,
-	ethPrice: number,
-	dollarPrice: number,
-	cardType: 'planet' | 'item',
-	typeProp: {system: string, coords: string} | {level: number}
-}
+function GridCard({
+	                  cardImage,
+	                  series,
+	                  cardName,
+	                  ethPrice,
+	                  dollarPrice,
+	                  cardType,
+	                  typeProp,
+	                  label,
+                  }: gridCardProps) {
+	const [hover, setHover] = useState(false);
+	const MotionImage = motion(Image);
+	const MotionCard = motion(Card);
+	const MotionBox = motion(Box);
+
+
+	const imageAnimate = {
+		initial: { scale: 1 },
+		animate: { scale: 1.05, transition: {type: 'spring', stiffness: 200} },
+	}
+	const cardAnimate = {
+		initial: { y: 0},
+		animate: { y: -20, cursor: 'pointer'},
+	}
+	const choiseCardBGAnimate = {
+		initial: { filter: "brightness(1)"},
+		animate: { filter: "brightness(0.9)"}
+	}
 
 
 
-function GridCard({cardImage, series, cardName, ethPrice, dollarPrice, cardType, typeProp}:gridCardProps) {
-
-	function formatNumber(num:number):string {
+	function formatNumber(num: number): string {
 		return Number(num).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 	}
 
 	return (
-		<Card variant={'unstyled'} bg={'transparent'} w={'372px'}>
+		<MotionCard variant={'unstyled'} bg={'transparent'} w={'372px'} borderRadius={'16px'}
+			      // onMouseEnter={() => setHover(true)}
+			      // onMouseLeave={() => setHover(false)}
+			whileHover="animate"
+			          variants={cardAnimate}
+		      //       onHoverStart={() => setHover(true)}
+		      //       onHoverEnd={() => setHover(false)}
+		      // transition={'0.2s'}
+		      // _hover={{transform: 'translateY(-20px)', cursor: 'pointer'}}
+		>
 			<CardHeader w={'372px'} h={'372px'} borderRadius={'16px'} bg={'neutral.1000'}
-			            display={'flex'}
-			            justifyContent={'center'}
-			            alignItems={'center'}
+			            transition={'0.2s'}
+				// bg={hover ? 'neutral.600' : 'neutral.1000'}
+				          display={'flex'}
+				          justifyContent={'center'}
+				          alignItems={'center'}
+				          position={'relative'}
+				          zIndex="1"
 			>
-				<Image
+				<MotionBox w="100%" h="100%" borderRadius={'16px'} position="absolute" top="0" left="0" bg={'neutral.1000'}
+				     transition={'0.2s'}
+				           zIndex="-1"
+				           variants={choiseCardBGAnimate}
+				               // filter={hover ? 'brightness(0.9)' : 'brightness(1)'}
+				/>
+
+				{label === 'New' &&
+					<Text position={'absolute'} right={'16px'} top={'16px'} textStyle={'base2'} px={'12px'} py={'4px'}
+					      bg={'brand.100'} borderRadius={'6px'}>New</Text>}
+				{label === 'Popular' &&
+					<Text position={'absolute'} right={'16px'} top={'16px'} textStyle={'base2'} px={'12px'} py={'4px'}
+					      bg={'brand.200'} borderRadius={'6px'}>Popular</Text>}
+				{label === 'Featured' &&
+					<Text position={'absolute'} right={'16px'} top={'16px'} textStyle={'base2'} px={'12px'} py={'4px'}
+					      bg={'brand.500'} borderRadius={'6px'}>Featured</Text>}
+
+				<MotionImage
 					objectFit='cover'
 					src={cardImage}
 					alt='planet'
+					variants={imageAnimate}
 				/>
 			</CardHeader>
 			<CardBody p={0} mt={'20px'} pb={'16px'}>
@@ -62,26 +112,26 @@ function GridCard({cardImage, series, cardName, ethPrice, dollarPrice, cardType,
 				</Flex>
 
 			</CardBody>
-			<Divider orientation='horizontal' color={'neutral.400'} />
+			<Divider orientation='horizontal' color={'neutral.400'}/>
 			<CardFooter p={0} color={'neutral.600'} mt={'16px'}>
 				<Icon as={cardType === 'planet' ? locationIcon : levelItemIcon} mr={'4px'}></Icon>
 				{cardType === 'planet' ?
-					<Text textStyle={'caption2'} color={'brand.200'}>{(typeProp as {system: string, coords: string}).system}
+					<Text textStyle={'caption2'} color={'brand.200'}>{(typeProp as { system: string, coords: string }).system}
 						{': '}
 						<Box as={"span"} color={'neutral.500'}>
-							{(typeProp as {system: string, coords: string}).coords}
+							{(typeProp as { system: string, coords: string }).coords}
 						</Box>
 					</Text>
 					:
 					<Text textStyle={'caption2'} color={'neutral.500'}>{'Level requirement'}
 						{': '}
 						<Box as={"span"} color={'brand.200'}>
-							{cardType === 'item' && (typeProp as {level: number}).level}
+							{cardType === 'item' && (typeProp as { level: number }).level}
 						</Box>
 					</Text>
 				}
 			</CardFooter>
-		</Card>
+		</MotionCard>
 	);
 }
 
