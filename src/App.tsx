@@ -11,12 +11,15 @@ import {mainTheme} from "./styles/theme";
 import Header from "./components/header";
 import WelcomeContainer from "./components/welcomeContainer";
 import MenuTabs from "./components/menuTabs";
+import SocialMedia from "./components/socialMedia";
 
 export const App = () => (
   <ChakraProvider theme={mainTheme}>
     <Header />
     <WelcomeContainer/>
     <MenuTabs/>
+    <SocialMedia/>
+
 
 
 

@@ -1,12 +1,42 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Card, CardBody, CardFooter, CardHeader, Center, Divider, Flex, Icon, Image, Text} from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Center,
+	Divider,
+	Flex,
+	Icon,
+	Image,
+	Text
+} from "@chakra-ui/react";
 import SeriesLabel from "./seriesLabel";
 import useColorWithOpacity from "../hooks/useColorWithOpacity";
 import {ReactComponent as locationIcon} from "../assets/icons/location.svg";
 import {ReactComponent as levelItemIcon} from "../assets/icons/levelItem.svg";
 import {gridCardProps} from '../types/interfaces';
-import {motion, useAnimation} from "framer-motion";
+import {motion, useAnimation, useCycle} from "framer-motion";
 
+
+const imageAnimate = {
+	initial: {scale: 1},
+	hover: {scale: 1.05, transition: {type: 'spring', stiffness: 100, damping: 5,}},
+}
+const cardAnimate = {
+	initial: {y: 0, opacity: 0},
+	hover: {y: -20, cursor: 'pointer'},
+}
+const choiseCardBGAnimate = {
+	initial: {filter: "brightness(1)"},
+	hover: {filter: "brightness(0.9)"}
+}
+const buttonCardAnimate = {
+	initial: {opacity: '0'},
+	hover: {opacity: '1', transition: {duration: 2, delay: 0.2}}
+}
 
 function GridCard({
 	                  cardImage,
@@ -18,25 +48,11 @@ function GridCard({
 	                  typeProp,
 	                  label,
                   }: gridCardProps) {
-	const [hover, setHover] = useState(false);
+	const [hoverEffect, setHoverEffect] = useCycle(false, true);
 	const MotionImage = motion(Image);
 	const MotionCard = motion(Card);
+	const MotionButton = motion(Button);
 	const MotionBox = motion(Box);
-
-
-	const imageAnimate = {
-		initial: { scale: 1 },
-		animate: { scale: 1.05, transition: {type: 'spring', stiffness: 200} },
-	}
-	const cardAnimate = {
-		initial: { y: 0},
-		animate: { y: -20, cursor: 'pointer'},
-	}
-	const choiseCardBGAnimate = {
-		initial: { filter: "brightness(1)"},
-		animate: { filter: "brightness(0.9)"}
-	}
-
 
 
 	function formatNumber(num: number): string {
@@ -45,30 +61,31 @@ function GridCard({
 
 	return (
 		<MotionCard variant={'unstyled'} bg={'transparent'} w={'372px'} borderRadius={'16px'}
-			      // onMouseEnter={() => setHover(true)}
-			      // onMouseLeave={() => setHover(false)}
-			whileHover="animate"
+		            whileHover="hover"
+			// onMouseEnter={() => setHoverEffect()}
+			// onMouseLeave={() => setHoverEffect()}
+			          initial='initial'
 			          variants={cardAnimate}
-		      //       onHoverStart={() => setHover(true)}
-		      //       onHoverEnd={() => setHover(false)}
-		      // transition={'0.2s'}
-		      // _hover={{transform: 'translateY(-20px)', cursor: 'pointer'}}
+			          whileInView={{opacity: 1}}
+
 		>
 			<CardHeader w={'372px'} h={'372px'} borderRadius={'16px'} bg={'neutral.1000'}
 			            transition={'0.2s'}
-				// bg={hover ? 'neutral.600' : 'neutral.1000'}
-				          display={'flex'}
-				          justifyContent={'center'}
-				          alignItems={'center'}
-				          position={'relative'}
-				          zIndex="1"
+			            display={'flex'}
+			            justifyContent={'center'}
+			            alignItems={'center'}
+			            position={'relative'}
+			            zIndex="1"
 			>
 				<MotionBox w="100%" h="100%" borderRadius={'16px'} position="absolute" top="0" left="0" bg={'neutral.1000'}
-				     transition={'0.2s'}
+				           transition={'0.2s'}
 				           zIndex="-1"
 				           variants={choiseCardBGAnimate}
-				               // filter={hover ? 'brightness(0.9)' : 'brightness(1)'}
 				/>
+				<MotionButton position={'absolute'} zIndex={2} height={'70px'} transform="translate(-50%, -50%)"
+				              left={'50%'} top={'50%'} variant={'primary'} variants={buttonCardAnimate}>
+					Read more
+				</MotionButton>
 
 				{label === 'New' &&
 					<Text position={'absolute'} right={'16px'} top={'16px'} textStyle={'base2'} px={'12px'} py={'4px'}
@@ -85,6 +102,8 @@ function GridCard({
 					src={cardImage}
 					alt='planet'
 					variants={imageAnimate}
+
+
 				/>
 			</CardHeader>
 			<CardBody p={0} mt={'20px'} pb={'16px'}>
@@ -132,6 +151,7 @@ function GridCard({
 				}
 			</CardFooter>
 		</MotionCard>
+
 	);
 }
 

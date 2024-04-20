@@ -14,26 +14,32 @@ import {
 	Image,
 	AbsoluteCenter
 } from "@chakra-ui/react";
-import useColorWithOpacity from "../hooks/useColorWithOpacity";
-import {ReactComponent as locationIcon} from "../assets/icons/location.svg";
-import SeriesLabel from "./seriesLabel";
-import planet1 from "../assets/images/Planet1.png";
 import GridCard from "./gridCard";
 import {planets} from "../data/data";
+import {AnimatePresence, motion} from "framer-motion";
 
+const gridAnimate = {
+	initial: {
+
+	}
+}
 
 function PlanetsList() {
+	const GridMotion = motion(SimpleGrid)
 
 	return (
 
 		<Box pt={'65px'}>
-			<SimpleGrid columns={3} spacingX={'34px'} spacingY={'40px'}>
+			<GridMotion columns={3} spacingX={'34px'} spacingY={'40px'}  variants={gridAnimate}>
 				{planets.map(planet =>
-					<GridCard cardImage={planet.cardImage} series={planet.series} cardName={planet.cardName}
-					          ethPrice={planet.ethPrice} dollarPrice={planet.dollarPrice} cardType={planet.cardType}
-					          typeProp={planet.typeProp} label={planet.label}/>
+					<AnimatePresence>
+						<GridCard cardImage={planet.cardImage} series={planet.series} cardName={planet.cardName}
+						          ethPrice={planet.ethPrice} dollarPrice={planet.dollarPrice} cardType={planet.cardType}
+						          typeProp={planet.typeProp} label={planet.label}/>
+					</AnimatePresence>
+
 				)}
-			</SimpleGrid>
+			</GridMotion>
 		</Box>
 	);
 }
